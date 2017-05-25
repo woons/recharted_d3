@@ -10,7 +10,23 @@
   	// Basic setting
   		var width = 500;
   		var height = 300;
-  		
+  		var margin = {top : 10, right : 10, bottom : 10, left : 10};
+  	
+  	// xAxis & yAxis setting
+		var x = d3.scaleBand()
+			.domain([0, 500])
+			.range([0, 500]);
+		var y = d3.scaleLinear()
+			.rangeRound([height, 0]);
+
+	// svg setting
+		var svg = d3.select("body").append("svg")
+				.attr("width", width)
+				.attr("height", height);
+
+		var g = svg.append("g");
+
+
   	// Import data
   		var data = d3.csv("data/sample.csv", function(error, data) {
   			data.forEach(function(d) {
@@ -19,17 +35,23 @@
   			})
   			console.log(data);
 
-  	// Canvas setting
-  		var svg = d3.select("body").append("svg")
-  					.attr("width", width)
-  					.attr("height", height)
-  					.append("g");
+  			/*x.domain(data.map(function(d) {return d.year;}));
+  			y.domain([0, d3.max(function(d){return d.value;})]);*/
 
-	// xAxis & yAxis setting
-		var x = d3.scaleLinear()
-			.domain([0, width]);
-		var y = d3.scaleLlinear()
-			.domain([height, 0]);
+  		/*	g.append('g')
+  				.attr("class", "axis axis--x")
+  				.attr("transform", "translate(0, " + height + ")")
+  				.call(d3.axisBottom(x));*/
+
+  			g.selectAll(".bar")
+			    .data(data)
+			    .enter().append("rect")
+			      .attr("class", "bar")
+			      .attr("x", function(d) { return d.year - 2000 - margin; })
+			      .attr("y", function(d) { return d.value; })
+			      .attr("width", x.bandwidth())
+			      .attr("height", function(d) { return height - d.value; });
+
 		});	
   	</script>
   </body>
