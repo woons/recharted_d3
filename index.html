@@ -11,20 +11,24 @@
   		var width = 500;
   		var height = 300;
   		var margin = {top : 10, right : 10, bottom : 10, left : 10};
+  		var barPadding = 10;
   	
   	// xAxis & yAxis setting
-		var x = d3.scaleBand()
-			.domain([0, 500])
-			.range([0, 500]);
+		var x = d3.scaleOrdinal()
+			.range([0, width]);
+
 		var y = d3.scaleLinear()
-			.rangeRound([height, 0]);
+			.range([height, 0]);
+
+	//xAxis
+		var xAxis = d3.axisBottom(x);
+		var yAxis = d3.axisLeft(y);
 
 	// svg setting
 		var svg = d3.select("body").append("svg")
 				.attr("width", width)
-				.attr("height", height);
-
-		var g = svg.append("g");
+				.attr("height", height)
+				.append("g");
 
 
   	// Import data
@@ -35,22 +39,30 @@
   			})
   			console.log(data);
 
-  			/*x.domain(data.map(function(d) {return d.year;}));
-  			y.domain([0, d3.max(function(d){return d.value;})]);*/
+  			// x축 설정
+  			/*svg.append("g")
+		      .attr("class", "x axis")
+		      .call(xAxis)
+		      .attr("dx", "1px")
+		      .attr("dy", "1px")
+		      .attr("transform", "rotate(-45)" );*/
 
-  		/*	g.append('g')
-  				.attr("class", "axis axis--x")
-  				.attr("transform", "translate(0, " + height + ")")
-  				.call(d3.axisBottom(x));*/
+		    // y축 설정
+		     svg.append("g")
+		      .attr("class", "y axis")
+		      .call(yAxis);
 
-  			g.selectAll(".bar")
-			    .data(data)
-			    .enter().append("rect")
-			      .attr("class", "bar")
-			      .attr("x", function(d) { return d.year - 2000 - margin; })
-			      .attr("y", function(d) { return d.value; })
-			      .attr("width", x.bandwidth())
-			      .attr("height", function(d) { return height - d.value; });
+		    // 데이터를 시각화로 맵핑 
+		      svg.selectAll("bar")
+		      .data(data)
+		      .enter()
+		      .append("rect")
+		      .attr("class","chart")
+		      .attr("fill", "#F2E4B1")
+		      .attr("x", function(d, i) { return i * (width / data.length); })
+		      .attr("width", width / data.length - barPadding)
+		      .attr("y", function(d) { return height - d.value; })
+		      .attr("height", function(d) { return d.value; });					
 
 		});	
   	</script>
